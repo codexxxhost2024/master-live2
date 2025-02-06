@@ -1,379 +1,439 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Live</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-:root {
-    --bg-color-dark: #121212;
-    --text-color-dark: #e0e0e0;
-    --accent-color-dark: #61affe;
-    --bg-color-light: #f0f0f0;
-    --text-color-light: #333;
-    --accent-color-light: #007bff;
-    --input-bg-dark: #242424;
-    --input-bg-light: #fff;
-    --button-bg-dark: #333;
-    --button-bg-light: #ddd;
-    --shadow-color-dark: rgba(0, 0, 0, 0.3);
-    --shadow-color-light: rgba(0, 0, 0, 0.1);
-}
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aitek Live</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+  :root {
+  --bg-color: #1a1a1a;
+  --button-bg: #2d2d2d;
+  --button-hover: #3d3d3d;
+  --text-color: #ffffff;
+  --accent-color: #4CAF50;
+  --danger-color: #ff4444;
+  --msg-user-bg: #007AFF; /* iOS Blue */
+  --msg-model-bg: #444444;
+  --font-size: 14px; /* Base font size */
+  }
 
-[data-theme="dark"] {
-    --bg-color: var(--bg-color-dark);
-    --text-color: var(--text-color-dark);
-    --accent-color: var(--accent-color-dark);
-    --input-bg: var(--input-bg-dark);
-    --button-bg: var(--button-bg-dark);
-    --shadow-color: var(--shadow-color-dark);
-}
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  }
 
-[data-theme="light"] {
-    --bg-color: var(--bg-color-light);
-    --text-color: var(--text-color-light);
-    --accent-color: var(--accent-color-light);
-    --input-bg: var(--input-bg-light);
-    --button-bg: var(--button-bg-light);
-    --shadow-color: var(--shadow-color-light);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Prevent scrollbars on the body */
-}
-
-.app-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100%;  /* Full width */
-    /*max-width: 600px;  Removed max-width for true full width */
-    margin: 0 auto;
-    overflow: hidden;
-    position: relative;
-}
-
-.header {
-    background-color: var(--bg-color);
-    padding: 15px;
-    box-shadow: 0 2px 5px var(--shadow-color);
-    z-index: 2;
-    position: sticky;
-    top: 0;
-    width: 100%; /* Header full width */
-}
-
-.header h1 {
-    color: var(--text-color);
-    font-size: 1.5rem;
-    text-align: center;
-}
-
-.chat-area {
-    flex-grow: 1;
-    padding: 10px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    scroll-behavior: smooth;
-}
-
-.chat-message {
-    padding: 10px 15px;
-    border-radius: 15px;
-    margin-bottom: 8px;
-    word-wrap: break-word;
-    line-height: 1.4;
-    max-width: 80%;
-}
-
-.user-message {
-    background-color: var(--accent-color);
-    color: white;
-    align-self: flex-end;
-    margin-left: auto;
-}
-
-.model-message {
-    background-color: var(--button-bg);
-    color: var(--text-color);
-    align-self: flex-start;
-    margin-right: auto;
-}
-
-.model-message.streaming::after {
-    content: '…';
-    display: inline-block;
-    animation: blink 1s step-end infinite;
-    margin-left: 4px;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-
-.input-area {
-    padding: 10px;
-    background-color: var(--bg-color);
-    border-top: 1px solid var(--shadow-color);
-    display: flex;
-    align-items: center;
-    z-index: 2;
-    position: sticky;
-    bottom: 0;
-    width: 100%; /* Input area full width */
-}
-
-.text-input {
-    flex-grow: 1;
-    padding: 12px 15px;
-    border: none;
-    border-radius: 25px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    font-size: 1rem;
-    margin-right: 10px;
-    outline: none;
-    box-shadow: 0 1px 3px var(--shadow-color);
-}
-
-.text-input:focus {
-    box-shadow: 0 2px 5px var(--shadow-color);
-}
-
-.send-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    box-shadow: 0 1px 3px var(--shadow-color);
-}
-
-.send-btn:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-}
-
-
-/* Connect/Disconnect buttons - simplified */
-.connect-disconnect-container {
-  position: absolute;
-  top: 15px;
-  right: 15px;
+  body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
+  font-size: var(--font-size); /* Use the variable for font size */
+  }
+
+  .app-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  }
+
+  /* Header */
+  .app-header {
+  width: 100%; /* Full width */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--button-bg);
+  border-bottom: 1px solid #333;
+  }
+
+  .app-header h1 {
+  font-size: 1.2rem; /* Slightly larger title */
+  }
+
+  .header-buttons {
+  display: flex;
+  gap: 8px;
+  }
+
+  .header-button {
+  background-color: transparent;
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem; /* Larger icons */
+  padding: 5px; /* Reduced padding */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  }
+
+  .header-button:hover {
+  background-color: var(--button-hover);
+  }
+
+  /* Chat History */
+  .chat-history {
+  flex-grow: 1;
+  width: 100%; /* Full width within app-container */
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  }
+
+  .chat-message {
+  padding: 10px 14px;
+  border-radius: 20px;
+  max-width: 80%;
+  word-wrap: break-word;
+  line-height: 1.4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .user-message {
+  background-color: var(--msg-user-bg);
+  color: white;
+  align-self: flex-end;
+  }
+
+  .model-message {
+  background-color: var(--msg-model-bg);
+  color: white;
+  align-self: flex-start;
+  }
+
+  /* Footer - Input and Controls */
+  .app-footer {
+  width: 100%; /* Full width */
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--button-bg);
+  border-top: 1px solid #333;
   gap: 10px;
-  z-index: 10;
-}
+  }
 
-.connect-btn, .disconnect-btn {
-    padding: 8px 12px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
+  .control-buttons {
+  display: flex;
+  gap: 8px;
+  }
 
-.connect-btn {
-    background-color: var(--accent-color);
-    color: white;
-}
+  .control-button {
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem; /* Larger icons */
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  }
 
-.disconnect-btn {
-    background-color: var(--button-bg);
-    color: var(--text-color);
-}
+  .control-button:hover {
+  background-color: var(--button-hover);
+  }
 
-.connect-btn:hover {
-  background-color: #0056b3;
-}
+  .text-input {
+  flex-grow: 1;
+  padding: 12px 15px;
+  border-radius: 25px;
+  border: none;
+  background-color: #333;
+  color: var(--text-color);
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 80%; /* Add this line */
+  max-width: 600px; /* optional, max width on larger screens */
+  }
 
-.disconnect-btn:hover {
-  background-color: #a0a0a0;
-}
+  .send-button {
+  background-color: transparent; /* Remove the background color */
+  color: var(--accent-color);
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem; /* Larger send icon */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: color 0.3s ease; /* Changed transition */
+  }
 
+  .send-button:hover {
+  color: #388e3c; /* Changed hover color */
+  }
 
-/* Theme Toggle Button */
-.theme-toggle {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background-color: var(--button-bg);
-    color: var(--text-color);
-    border: none;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-size: 1.2rem;
-    z-index: 10;
-    transition: background-color 0.2s ease;
-}
-
-.theme-toggle:hover {
-    background-color: #555;
-}
-
-
-/* Mic, Camera, Screen Buttons (Simplified and placed in input area) */
-.multimodal-buttons {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-left: auto; /* Push buttons to the right */
-}
-
-.mic-btn, .camera-btn, .screen-btn {
-    background-color: var(--button-bg);
-    color: var(--text-color);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.mic-btn:hover, .camera-btn:hover, .screen-btn:hover {
-    background-color: #555;
-}
-
-.mic-btn.active, .camera-btn.active, .screen-btn.active {
-    background-color: var(--accent-color);
-    color: white;
-}
-
-/* Use Material Icons */
-.mic-btn .material-icons,
-.camera-btn .material-icons,
-.screen-btn .material-icons,
-.send-btn .material-icons,
-.theme-toggle .material-icons
- {
-    font-size: 20px; /* Adjust icon size as needed */
-}
-
-.camera-preview-container {
-    position: fixed;
-    bottom: 80px;
-    left: 15px;
-    z-index: 100;
-}
-
-.camera-preview {
-  width: 200px;
-  height: 150px;
-  background-color: var(--input-bg);
+  /* Camera and Screen Previews */
+  .camera-preview,
+  .screen-preview {
+  position: fixed;
+  bottom: 70px;
+  left: 10px;
+  width: 140px; /* Slightly wider */
+  height: 105px; /* Adjusted for aspect ratio */
+  background-color: var(--button-bg);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 5px var(--shadow-color);
-}
+  z-index: 2;
+  display: none;
+  }
 
-.camera-preview video {
+  .camera-preview.active,
+  .screen-preview.active {
+  display: block;
+  }
+
+  .camera-preview video,
+  .screen-preview video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
+  }
 
-.screen-preview-container {
-    position: fixed;
-    bottom: 80px;
-    right: 15px;
-    z-index: 100;
-}
+  /* Settings Dialog */
+  .settings-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  }
 
-.screen-preview {
-  width: 200px;
-  height: 112.5px; /* 16:9 aspect ratio */
-  background-color: var(--input-bg);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px var(--shadow-color);
-}
+  .settings-overlay.active {
+  display: block;
+  }
 
-.screen-preview video {
+  .settings-dialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--bg-color);
+  border: 1px solid var(--accent-color);
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 1001;
+  }
+
+  .settings-dialog.active {
+  display: block;
+  }
+
+  .settings-group {
+  margin-bottom: 20px;
+  }
+
+  .settings-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  }
+
+  .settings-group select,
+  .settings-group input {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
+  padding: 10px;
+  background-color: var(--button-bg);
+  border: 1px solid var(--accent-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  }
+
+  .settings-save-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  }
+
+  .settings-save-btn:hover {
+  opacity: 0.9;
+  }
+
+  /* Media Queries for Responsiveness */
+  @media (min-width: 768px) {
+  .app-container {
+  width: 80%;
+  max-width: 600px;
+  margin: 0 auto;
+  }
+  }
+  </style>
+ </head>
+ <body>
+  <div class="app-container">
+  <!-- Header -->
+  <div class="app-header">
+  <h1>Gemini Live</h1>
+  <div class="header-buttons">
+  <button id="disconnectBtn" class="header-button"><i class="material-icons">power_settings_new</i></button>
+  <button id="connectBtn" class="header-button" style="display: none;"><i class="material-icons">rss_feed</i></button>
+  <button id="settingsBtn" class="header-button"><i class="material-icons">settings</i></button>
+  </div>
+  </div>
+
+  <!-- Chat History -->
+  <div id="chatHistory" class="chat-history">
+  <!-- Messages will be dynamically added here -->
+  <div class="chat-message user-message">Hello, how are you?</div>
+  <div class="chat-message model-message">I'm doing well, thank you!</div>
+  </div>
+
+  <!-- Footer - Input and Controls -->
+  <div class="app-footer">
+  <div class="control-buttons">
+  <button id="cameraBtn" class="control-button"><i class="material-icons">videocam</i></button>
+  <button id="screenBtn" class="control-button"><i class="material-icons">screen_share</i></button>
+  <button id="micBtn" class="control-button"><i class="material-icons">mic</i></button>
+  </div>
+  <input type="text" id="messageInput" class="text-input" placeholder="Type your message...">
+  <button id="sendBtn" class="send-button"><i class="material-icons">send</i></button>
+  </div>
+
+  <!-- Camera and Screen Previews -->
+  <div id="cameraPreview" class="camera-preview">
+  <video></video>
+  </div>
+  <div id="screenPreview" class="screen-preview">
+  <video></video>
+  </div>
+
+  <!-- Settings Overlay and Dialog -->
+  <div id="settingsOverlay" class="settings-overlay"></div>
+  <div id="settingsDialog" class="settings-dialog">
+  <!-- Settings Content (example) -->
+  <div class="settings-group">
+  <label for="audioSource">Audio Source:</label>
+  <select id="audioSource">
+  <!-- Options populated by JavaScript -->
+  </select>
+  </div>
+  <button class="settings-save-btn">Save Settings</button>
+  </div>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const disconnectBtn = document.getElementById('disconnectBtn');
+  const connectBtn = document.getElementById('connectBtn');
+  const settingsBtn = document.getElementById('settingsBtn');
+  const cameraBtn = document.getElementById('cameraBtn');
+  const screenBtn = document.getElementById('screenBtn');
+  const micBtn = document.getElementById('micBtn');
+  const messageInput = document.getElementById('messageInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const chatHistory = document.getElementById('chatHistory');
+  const cameraPreview = document.getElementById('cameraPreview');
+  const screenPreview = document.getElementById('screenPreview');
+  const settingsOverlay = document.getElementById('settingsOverlay');
+  const settingsDialog = document.getElementById('settingsDialog');
+  const audioSource = document.getElementById('audioSource'); // Get the audio source select element
+
+  // Function to populate audio sources
+  async function populateAudioSources() {
+  try {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  const audioInputDevices = devices.filter(device => device.kind === 'audioinput');
+
+  audioInputDevices.forEach(device => {
+  const option = document.createElement('option');
+  option.value = device.deviceId;
+  option.text = device.label || `Microphone ${audioSource.options.length + 1}`;
+  audioSource.appendChild(option);
+  });
+  } catch (error) {
+  console.error('Error enumerating devices:', error);
+  }
+  }
+
+  populateAudioSources();
+
+  // Toggle Camera Preview
+  cameraBtn.addEventListener('click', () => {
+  cameraPreview.classList.toggle('active');
+  screenPreview.classList.remove('active');
+  });
+
+  // Toggle Screen Share Preview
+  screenBtn.addEventListener('click', () => {
+  screenPreview.classList.toggle('active');
+  cameraPreview.classList.remove('active');
+  });
+
+  // Toggle Mic and Visualizer - No specific visualizer in this code but adding for completeness
+  micBtn.addEventListener('click', () => {
+  // Implement your visualizer toggle logic here. Example:
+  // visualizer.classList.toggle('active'); (if you have a .visualizer element)
+  });
 
 
-/* Visualizer */
-.visualizer-container {
-    position: fixed;
-    bottom: 80px; /* Position above the input area */
-    left: 0;
-    width: 100%;
-    height: 60px;  /* Reduced height */
-    z-index: 1;
-}
+  // Connect/Disconnect Button
+  disconnectBtn.addEventListener('click', () => {
+  disconnectBtn.style.display = 'none';
+  connectBtn.style.display = 'inline-flex';
+  });
 
-.visualizer {
-    width: 100%;
-    height: 100%;
-}
+  connectBtn.addEventListener('click', () => {
+  disconnectBtn.style.display = 'inline-flex';
+  connectBtn.style.display = 'none';
+  });
 
-    </style>
-</head>
-<body data-theme="dark">
-    <div class="app-container">
-        <button class="theme-toggle" id="themeToggle"><span class="material-icons">wb_sunny</span></button>
-        <div class="header">
-            <h1>Gemini Live</h1>
-        </div>
-        <div class="chat-area" id="chatArea">
-            <!-- Chat messages will be dynamically added here -->
-        </div>
-        <div class="input-area">
-            <input type="text" id="messageInput" class="text-input" placeholder="Type a message...">
-            <div class="multimodal-buttons">
-                <button id="micBtn" class="mic-btn"><span class="material-icons">mic</span></button>
-                <button id="cameraBtn" class="camera-btn"><span class="material-icons">videocam</span></button>
-                <button id="screenBtn" class="screen-btn"><span class="material-icons">screen_share</span></button>
-            </div>
-            <button id="sendBtn" class="send-btn"><span class="material-icons">send</span></button>
-        </div>
-        <div class="connect-disconnect-container">
-            <button id="disconnectBtn" class="disconnect-btn">Disconnect</button>
-            <button id="connectBtn" class="connect-btn" style="display: none;">Connect</button>
-        </div>
-        <div class="visualizer-container">
-          <canvas id="visualizer" class="visualizer"></canvas>
-        </div>
-        <div class="camera-preview-container" style="display: none;">
-            <div class="camera-preview" id="cameraPreview"></div>
-        </div>
-        <div class="screen-preview-container" style="display: none;">
-            <div class="screen-preview" id="screenPreview"></div>
-        </div>
-    </div>
-    <script type="module" src="js/script.js"></script>
-</body>
-</html>
+  // Settings Button and Dialog
+  settingsBtn.addEventListener('click', () => {
+  settingsOverlay.classList.add('active');
+  settingsDialog.classList.add('active');
+  });
+
+  settingsOverlay.addEventListener('click', () => {
+  settingsOverlay.classList.remove('active');
+  settingsDialog.classList.remove('active');
+  });
+
+  // Send Message
+  sendBtn.addEventListener('click', () => {
+  const messageText = messageInput.value.trim();
+  if (messageText) {
+  const message = document.createElement('div');
+  message.className = 'chat-message user-message';
+  message.textContent = messageText;
+  chatHistory.appendChild(message);
+  messageInput.value = '';
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+  }
+  });
+  });
+  </script>
+ </body>
+ </html>
